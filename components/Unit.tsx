@@ -1,9 +1,13 @@
+"use client";
+
+import { motion } from "motion/react";
 import { PlayerRow } from "@/components/PlayerRow";
+import { item } from "@/components/StaggerList";
 import type { Player, UnitName } from "@/lib/data";
 
 export function Unit({ unit, players }: { unit: UnitName; players: Player[] }) {
   return (
-    <div className="mt-7 first:mt-1">
+    <motion.div variants={item} className="mt-7 first:mt-1">
       <div className="flex items-baseline gap-2.5 mb-3">
         <h3 className="text-[13px] font-semibold tracking-[0.02em] text-paper">{unit}</h3>
         <span className="text-[10px] font-semibold tracking-[0.14em] text-navy-500">
@@ -15,6 +19,6 @@ export function Unit({ unit, players }: { unit: UnitName; players: Player[] }) {
           <PlayerRow key={`${p.num}-${p.name}`} player={p} />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Flag } from "@/components/Flag";
+import { item } from "@/components/StaggerList";
+import { useMatchTime } from "@/lib/match-time";
 import type { Fixture } from "@/lib/data";
 
 function useLocalKickoff(fx: Fixture) {
@@ -14,8 +16,7 @@ function useLocalKickoff(fx: Fixture) {
     const h = d.getHours().toString().padStart(2, "0");
     const m = d.getMinutes().toString().padStart(2, "0");
     const tzParts = new Intl.DateTimeFormat([], { timeZoneName: "short" }).formatToParts(d);
-    const zone =
-      tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
+    const zone = tzParts.find((p) => p.type === "timeZoneName")?.value ?? "";
     const date = d.toLocaleDateString("en-GB", {
       weekday: "short",
       day: "numeric",
@@ -29,10 +30,28 @@ function useLocalKickoff(fx: Fixture) {
 export function FixtureCard({ fx }: { fx: Fixture }) {
   const [open, setOpen] = useState(false);
   const { clock, zone, date } = useLocalKickoff(fx);
+  const time = useMatchTime(fx.utc);
+
+  const isMatchday = time.phase === "today" || time.phase === "live";
+  const isLive = time.phase === "live";
+
+  const subtitleTone =
+    time.phase === "live"
+      ? "text-gold font-semibold tracking-[0.18em] uppercase animate-pulse"
+      : time.phase === "today"
+        ? "text-gold font-semibold tracking-[0.14em] uppercase"
+        : time.phase === "finished"
+          ? "text-paper font-medium tracking-[0.1em]"
+          : "text-navy-400 font-light";
 
   return (
-    <article
-      className="relative block py-[22px] pb-5 border-b border-line-soft last:border-b-0 overflow-hidden cursor-pointer no-callout"
+    <motion.article
+      variants={item}
+      className={[
+        "relative block py-[22px] pb-5 overflow-hidden cursor-pointer no-callout",
+        "border-b last:border-b-0",
+        isMatchday ? "border-gold/40" : "border-line-soft",
+      ].join(" ")}
       onClick={() => setOpen((o) => !o)}
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
@@ -75,8 +94,16 @@ export function FixtureCard({ fx }: { fx: Fixture }) {
         animate={{ paddingLeft: open ? 12 : 0 }}
         transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
       >
-        <div className="text-[10.5px] font-semibold tracking-[0.18em] text-navy-500 mb-2">
-          {fx.no}
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className="text-[10.5px] font-semibold tracking-[0.18em] text-navy-500">
+            {fx.no}
+          </div>
+          {isLive && (
+            <span className="text-[9.5px] font-semibold tracking-[0.18em] uppercase text-gold flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+              Live
+            </span>
+          )}
         </div>
 
         <div className="font-semibold leading-[1.05] tracking-[-0.03em] text-paper text-[clamp(26px,8vw,32px)] mb-3.5">
@@ -94,7 +121,9 @@ export function FixtureCard({ fx }: { fx: Fixture }) {
           </span>
           <span className="ml-auto text-right text-[12.5px] font-light text-navy-400">
             <b className="block text-navy-200 font-medium text-[13px]">{date}</b>
-            Kick-off
+            <span className={["text-[10.5px] block mt-0.5", subtitleTone].join(" ")}>
+              {time.label}
+            </span>
           </span>
         </div>
 
@@ -132,6 +161,6 @@ export function FixtureCard({ fx }: { fx: Fixture }) {
       >
         Tap to reveal &mdash; {fx.opponentName}
       </motion.div>
-    </article>
+    </motion.article>
   );
 }

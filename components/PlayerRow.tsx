@@ -73,7 +73,7 @@ export function PlayerRow({ player }: { player: Player }) {
           opacity: open ? 1 : 0,
         }}
       />
-      <span className="relative z-10 text-[11px] font-semibold text-navy-400 tabular-nums">
+      <span className="relative z-10 text-[11px] font-semibold text-gold tabular-nums">
         {player.num}
       </span>
       <span
