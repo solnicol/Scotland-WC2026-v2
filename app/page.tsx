@@ -3,6 +3,7 @@ import { Fixtures } from "@/components/Fixtures";
 import { Squad } from "@/components/Squad";
 import { BicycleOverlay } from "@/components/BicycleOverlay";
 import { BackToTop } from "@/components/BackToTop";
+import { AddToHomePrompt } from "@/components/AddToHomePrompt";
 import { EggProvider } from "@/lib/egg-context";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       </main>
       <BicycleOverlay />
       <BackToTop />
+      <AddToHomePrompt />
     </EggProvider>
   );
 }
