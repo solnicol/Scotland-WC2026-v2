@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Scotland — FIFA World Cup 2026 (v2)
 
-## Getting Started
+A rewrite of [scotland-wc2026.vercel.app](https://scotland-wc2026.vercel.app) — the same site, same content, same design language, rebuilt on a modern React stack as a learning exercise.
 
-First, run the development server:
+The original lives at [github.com/solnicol/Scotland-WC2026](https://github.com/solnicol/Scotland-WC2026) and stays untouched as a reference and fallback. This repo is the parallel implementation.
+
+## What changed (and what didn't)
+
+**Same:** OKLCH palette discipline (single navy hue + heraldic gold accent), the seamless gold-gleam animation on the SCOTLAND wordmark, the data-driven easter eggs (long-press on McTominay, McLean, Tierney for the famous Hampden goals), timezone-aware kickoffs, iOS-safe calendar handoff, Google Maps satellite venue links.
+
+**Different:** structure. The original is one self-contained HTML file; this is a Next.js App Router project with a component tree, typed data layer, and Motion driving the interactive transitions.
+
+## Stack
+
+- **Next.js 16** App Router (mostly static, prerendered output)
+- **Tailwind v4** — CSS-first config via `@theme`, native OKLCH colour tokens
+- **Motion** (`motion/react`) — fixture flag reveal, easter-egg overlay clip-path animation, back-to-top fade
+- **TypeScript** — strict types for the squad, fixtures, and egg data
+- **Geist** font via `next/font/google`
+
+## Architecture notes
+
+A few decisions worth recording:
+
+- **Data lives in `lib/data.ts`.** SQUAD (4 units, 26 players), FIXTURES, EGGS, and CLUB_COLOURS gradients are typed constants. Adding a new easter egg, a transfer, or a fixture change is a one-line edit in one file.
+- **One Context, one piece of global state.** `EggProvider` exposes `{ active, open, close }` so the long-press handler on any player row can fire the global overlay. No state libraries — `useState` + Context is the right size.
+- **Server components by default; `'use client'` only where it earns it.** Masthead, Squad section, Unit, and Flag SVGs are server-rendered. Player rows, fixture cards, the overlay, and the back-to-top button opt into client because they need interactivity, browser APIs (`Intl.DateTimeFormat`, scrollY), or Motion.
+- **The gleam stays pure CSS.** Motion is suited to discrete state transitions, not infinite render loops. The seamless `background-position` animation lives in `globals.css` with a `prefers-reduced-motion` fallback.
+- **Calendar handoff is the same trick as v1.** Plain `<a href="/scotland-v-brazil.ics">` links served with `Content-Type: text/calendar` via `vercel.json` — iOS Safari hands off to the Calendar app, no blob URL workaround.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev    # http://localhost:3000
+npm run build  # static build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  layout.tsx, page.tsx, globals.css
+components/
+  Masthead.tsx, Fixtures.tsx, FixtureCard.tsx
+  Squad.tsx, Unit.tsx, PlayerRow.tsx
+  Flag.tsx, BicycleOverlay.tsx, BackToTop.tsx
+lib/
+  data.ts, egg-context.tsx
+public/
+  haiti-v-scotland.ics, scotland-v-morocco.ics, scotland-v-brazil.ics
+vercel.json     # text/calendar Content-Type header rule
+```
