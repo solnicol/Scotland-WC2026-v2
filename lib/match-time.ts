@@ -32,9 +32,8 @@ export function matchTime(now: number, kickoffMs: number): MatchTime {
 
   // Future
   if (diff < DAY) return { phase: "upcoming", label: `in ${Math.round(diff / HOUR)} hours` };
-  if (diff < 14 * DAY) return { phase: "upcoming", label: `in ${Math.round(diff / DAY)} days` };
-  const weeks = Math.round(diff / (7 * DAY));
-  return { phase: "upcoming", label: `in ${weeks} ${weeks === 1 ? "week" : "weeks"}` };
+  const days = Math.round(diff / DAY);
+  return { phase: "upcoming", label: `in ${days} day${days === 1 ? "" : "s"}` };
 }
 
 function isSameLocalDay(a: number, b: number): boolean {
