@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   PALETTE  —  OKLCH, single brand hue (Scotland navy, H=264).
+   Crest gold (H=85) the lone warm accent. Flags + club chips
+   are also OKLCH, hue-true.
+   ============================================================ */
+@theme {
+  --color-navy-950: oklch(0.17 0.05 264);
+  --color-navy-900: oklch(0.21 0.06 264);
+  --color-navy-850: oklch(0.25 0.07 264);
+  --color-navy-800: oklch(0.30 0.085 264);
+  --color-navy-700: oklch(0.40 0.085 264);
+  --color-navy-500: oklch(0.55 0.06 264);
+  --color-navy-400: oklch(0.64 0.045 264);
+  --color-navy-200: oklch(0.85 0.022 264);
+  --color-paper:    oklch(0.97 0.01 264);
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-gold:     oklch(0.80 0.115 85);
+
+  --color-line:     oklch(0.42 0.05 264 / 0.5);
+  --color-line-soft:oklch(0.42 0.05 264 / 0.22);
+
+  --color-ht-blue:  oklch(0.42 0.13 255);
+  --color-ht-red:   oklch(0.55 0.20 25);
+  --color-ma-red:   oklch(0.52 0.21 25);
+  --color-ma-green: oklch(0.58 0.14 150);
+  --color-br-green: oklch(0.62 0.16 150);
+  --color-br-yellow:oklch(0.86 0.17 100);
+  --color-br-blue:  oklch(0.42 0.14 255);
+
+  --ease-brand: cubic-bezier(0.22, 0.61, 0.36, 1);
+
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-navy-950);
+  color: var(--color-navy-200);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-image:
+    radial-gradient(130% 70% at 50% -8%, oklch(0.30 0.085 264 / 0.6), transparent 60%),
+    radial-gradient(90% 55% at 100% 108%, oklch(0.25 0.07 264 / 0.45), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* iOS: kill long-press selection + image save callout on interactive bits */
+.no-callout {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---- HERO GLEAM ----
+   Seamless gold sheen sweep on the wordmark. Tile width matches
+   travel distance so the loop has no visible reset. */
+.hero-name {
+  background: linear-gradient(
+    100deg,
+    oklch(0.68 0.14 78) 0%,
+    oklch(0.74 0.13 81) 18%,
+    oklch(0.84 0.12 85) 35%,
+    oklch(0.93 0.11 88) 45%,
+    oklch(0.97 0.10 90) 50%,
+    oklch(0.93 0.11 88) 55%,
+    oklch(0.84 0.12 85) 65%,
+    oklch(0.74 0.13 81) 82%,
+    oklch(0.68 0.14 78) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: hero-gleam 8s linear infinite;
+}
+@keyframes hero-gleam {
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+  .hero-name {
+    animation: none;
+    background: none;
+    color: var(--color-gold);
+    -webkit-text-fill-color: var(--color-gold);
+  }
 }
