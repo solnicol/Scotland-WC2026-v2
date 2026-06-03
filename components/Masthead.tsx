@@ -28,7 +28,7 @@ export function Masthead() {
         </li>
         <li className="flex items-baseline gap-2">
           <span className="text-gold text-[14px] leading-none">&#183;</span>
-          Tap a player for club colours
+          Tap a player for their club colours
         </li>
         <li className="flex items-baseline gap-2">
           <span className="text-gold text-[14px] leading-none">&#183;</span>
