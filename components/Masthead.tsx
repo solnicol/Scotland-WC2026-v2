@@ -24,11 +24,11 @@ export function Masthead() {
       <ul className="list-none mt-[18px] flex flex-col gap-1.5 text-[10.5px] font-medium uppercase tracking-[0.14em] text-navy-500">
         <li className="flex items-baseline gap-2">
           <span className="text-gold text-[14px] leading-none">&#183;</span>
-          Tap a fixture for the opponent&apos;s colours
+          Tap a fixture for the opponent flag
         </li>
         <li className="flex items-baseline gap-2">
           <span className="text-gold text-[14px] leading-none">&#183;</span>
-          Tap a player for their club
+          Tap a player for club colours
         </li>
         <li className="flex items-baseline gap-2">
           <span className="text-gold text-[14px] leading-none">&#183;</span>
