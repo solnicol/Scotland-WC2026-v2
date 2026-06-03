@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 import { FIXTURES } from "@/lib/data";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -11,8 +13,15 @@ const NAVY_700 = "#3d4661";
 const NAVY_400 = "#929aae";
 const GOLD = "#d4b16b";
 const PAPER = "#f3f4f8";
+const GEIST_FONT_PATH = join(
+  process.cwd(),
+  "node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf"
+);
+const GEIST_WEIGHTS = [300, 400, 500, 600, 700] as const;
 
 export async function GET() {
+  const geist = await readFile(GEIST_FONT_PATH);
+
   return new ImageResponse(
     (
       <div
@@ -23,7 +32,7 @@ export async function GET() {
           flexDirection: "column",
           padding: "80px 100px",
           background: `radial-gradient(at top, ${NAVY_900} 0%, ${NAVY_950} 70%)`,
-          fontFamily: "system-ui, sans-serif",
+          fontFamily: "Geist",
         }}
       >
         {/* kicker */}
@@ -144,6 +153,12 @@ export async function GET() {
     {
       width: 1200,
       height: 630,
+      fonts: GEIST_WEIGHTS.map((weight) => ({
+        name: "Geist",
+        data: geist,
+        weight,
+        style: "normal",
+      })),
     }
   );
 }
