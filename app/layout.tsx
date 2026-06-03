@@ -10,25 +10,35 @@ const geist = Geist({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+const SITE_URL = "https://scotland-wc-2026-v2.vercel.app";
+const TITLE = "Scotland — FIFA World Cup 2026 · Group C Fixtures & Squad";
+const DESCRIPTION =
+  "Scotland at the FIFA World Cup 2026. Group C fixtures against Haiti, Morocco, and Brazil — kickoffs in your local time, plus the full 26-player squad.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://scotland-wc2026-v2.vercel.app"),
-  title: "Scotland — FIFA World Cup 2026",
-  description:
-    "Scotland at the FIFA World Cup 2026. Group C fixtures, the 26-player squad, venues, and kickoffs in your local time.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
   openGraph: {
     type: "website",
     locale: "en_GB",
-    title: "Scotland — FIFA World Cup 2026",
-    description:
-      "Group C · the Finals. Three group-stage ties to open the campaign, kickoffs shown in your local time.",
+    url: SITE_URL,
+    title: TITLE,
+    description: DESCRIPTION,
     siteName: "Scotland WC2026",
-    images: ["/api/og"],
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Scotland — FIFA World Cup 2026: Group C fixtures and squad",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Scotland — FIFA World Cup 2026",
-    description:
-      "Group C · the Finals. Three group-stage ties to open the campaign.",
+    title: TITLE,
+    description: DESCRIPTION,
     images: ["/api/og"],
   },
 };
