@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback } from "react";
 import { CLUB_COLOURS, EGGS, type Player } from "@/lib/data";
 import { useEgg } from "@/lib/egg-context";
+import { usePointerMotion } from "@/lib/use-pointer-motion";
 
 const LONG_PRESS_MS = 620;
 
@@ -11,6 +12,7 @@ export function PlayerRow({ player }: { player: Player }) {
   const [charging, setCharging] = useState(false);
   const firedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { motionRef, motionHandlers } = usePointerMotion<HTMLDivElement>();
   const { open: openEgg } = useEgg();
 
   const egg = EGGS[player.name];
@@ -47,22 +49,40 @@ export function PlayerRow({ player }: { player: Player }) {
     setOpen((o) => !o);
   }, []);
 
+  const handlePointerCancel = useCallback(() => {
+    endPress();
+    motionHandlers.onPointerCancel();
+  }, [endPress, motionHandlers]);
+
+  const handlePointerLeave = useCallback(() => {
+    endPress();
+    motionHandlers.onPointerLeave();
+  }, [endPress, motionHandlers]);
+
   return (
     <div
       className={[
         "relative grid grid-cols-[28px_1fr_auto] items-center gap-3 px-3 py-2.5 cursor-pointer no-callout overflow-hidden",
+        "transition-[transform,background-color] duration-[250ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform",
         "border-b border-line-soft last:border-b-0",
         player.captain ? "bg-navy-850/40" : "",
         charging ? "bg-navy-850" : "",
       ]
         .filter(Boolean)
         .join(" ")}
-      style={egg ? { touchAction: "none" } : undefined}
+      ref={motionRef}
+      style={{
+        ...(egg ? { touchAction: "none" as const } : {}),
+        background: "oklch(0.12 0.04 264 / var(--proximity-tint, 0))",
+        transform:
+          "rotate(var(--velocity-rotate, 0deg)) scaleX(var(--velocity-scale-x, 1)) scale(var(--proximity-scale, 1))",
+      }}
       onClick={handleClick}
       onPointerDown={startPress}
       onPointerUp={endPress}
-      onPointerCancel={endPress}
-      onPointerLeave={endPress}
+      onPointerCancel={handlePointerCancel}
+      onPointerLeave={handlePointerLeave}
+      onPointerMove={motionHandlers.onPointerMove}
       onContextMenu={egg ? (e) => e.preventDefault() : undefined}
     >
       <div
